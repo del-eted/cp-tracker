@@ -1,4 +1,4 @@
-import { Button } from 'react-bootstrap'
+import { Button, Modal } from 'react-bootstrap'
 import React from 'react'
 
 export default function CPTracker () {
@@ -7,7 +7,7 @@ export default function CPTracker () {
     let [TurnCounterDisable, setTurnCounterDisable] = React.useState (false)
     let [Primary, setPrimaryValue] = React.useState(0)
     let [PrimaryCounterDisable, setPrimaryCounterDisable] = React.useState (true)
-    // let [Secondary1, setSecondary1Value] = React.useState(0)
+    let [showReset, setShowReset] = React.useState (false)
 
     // CP counter
     const handleAddCPClick = () => setCPValue (CPValue + 1)
@@ -32,7 +32,31 @@ export default function CPTracker () {
     }
 
     //Primary VP Counter
-    const handleAddPrimaryClick = (num) => setPrimaryValue (Primary + num)
+    const handleAddPrimaryClick = (num) => {
+        if ((Primary + num) < 45) {
+            setPrimaryValue (Primary + num)
+        }
+        else {
+            setPrimaryValue (45)
+        }
+    }
+    const handlePrimaryClickDown = () => {
+        if (Primary >0) {
+            setPrimaryValue (Primary - 1)
+        }
+        else {}
+    }
+
+    //Reset Functionality
+    const resetPopupHandler = () => setShowReset (!showReset)
+    const resetFunctionHandler =() => {
+        setCPValue (0)
+        setTurnCounter (0)
+        setTurnCounterDisable (false)
+        setPrimaryValue (0)
+        setPrimaryCounterDisable (true)
+        setShowReset (false)
+    }
 
     return(
         <div id="CPHolder">
@@ -53,8 +77,30 @@ export default function CPTracker () {
             <div class="column side">
                 Primary Objectives {Primary}
                 <br></br>
+                <Button onClick={() => handlePrimaryClickDown ()}>-1</Button>
                 <Button disabled={PrimaryCounterDisable} onClick={() => handleAddPrimaryClick (1)}>+1</Button>
                 <Button disabled={PrimaryCounterDisable} onClick={() => handleAddPrimaryClick (5)}>+5</Button>
+            </div>
+
+            <br></br>
+            <br></br>
+            <div id="CPText">
+                <Button variant="danger" onClick={() => resetPopupHandler ()}>Reset Counters</Button>
+
+                <Modal show={showReset} onHide={() => resetPopupHandler ()}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Reset the Counter</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>This will reset all counters to zero, are you sure?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => resetPopupHandler ()}>
+                            Cancel
+                        </Button>
+                        <Button variant="primary" onClick={() => resetFunctionHandler ()}>
+                            Reset
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
 
         </div>
